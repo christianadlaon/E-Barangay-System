@@ -4,17 +4,22 @@ header("Access-Control-Allow-Origin: *"); // Allow React frontend
 header("Access-Control-Allow-Methods: POST");
 header("Access-Control-Allow-Headers: Content-Type");
 
-// Database connection
-$servername = "localhost";
-$username = "root"; // MySQL username
-$password = "";     // MySQL password
-$dbname = "bgd";
+// Use unified database configuration
+require_once __DIR__ . '/../api/config/database.php';
+
+$dbConfig = DatabaseConfig::getConfig();
 
 // Connect
-$conn = new mysqli($servername, $username, $password, $dbname);
+$conn = new mysqli(
+    $dbConfig['host'],
+    $dbConfig['user'],
+    $dbConfig['pass'],
+    $dbConfig['name'],
+    $dbConfig['port']
+);
 if ($conn->connect_error) {
     http_response_code(500);
-    echo json_encode(["error" => "Database connection failed"]);
+    echo json_encode(["error" => "Database connection failed: " . $conn->connect_error]);
     exit();
 }
 

@@ -2,13 +2,18 @@
 header('Content-Type: application/json');
 header("Access-Control-Allow-Origin: *"); // allow React app to fetch
 
-// Database connection
-$servername = "localhost";
-$username = "root"; // your MySQL username
-$password = "";     // your MySQL password
-$dbname = "bgd";
+// Use unified database configuration
+require_once __DIR__ . '/../api/config/database.php';
 
-$conn = new mysqli($servername, $username, $password, $dbname);
+$dbConfig = DatabaseConfig::getConfig();
+
+$conn = new mysqli(
+    $dbConfig['host'],
+    $dbConfig['user'],
+    $dbConfig['pass'],
+    $dbConfig['name'],
+    $dbConfig['port']
+);
 
 if ($conn->connect_error) {
     die(json_encode(['error' => 'Connection failed: ' . $conn->connect_error]));

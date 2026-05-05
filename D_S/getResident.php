@@ -4,13 +4,18 @@ header("Access-Control-Allow-Origin: *"); // allow React frontend
 header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type");
 
-// Database connection
-$servername = "localhost";
-$username = "root"; // your MySQL username
-$password = "";     // your MySQL password
-$dbname = "bgd";
+// Use unified database configuration
+require_once __DIR__ . '/../api/config/database.php';
 
-$conn = new mysqli($servername, $username, $password, $dbname);
+$dbConfig = DatabaseConfig::getConfig();
+
+$conn = new mysqli(
+    $dbConfig['host'],
+    $dbConfig['user'],
+    $dbConfig['pass'],
+    $dbConfig['name'],
+    $dbConfig['port']
+);
 
 // Check connection
 if ($conn->connect_error) {

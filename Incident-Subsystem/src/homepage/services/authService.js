@@ -36,7 +36,10 @@ export const authService = {
             });
             return response.data;
         } catch (error) {
-            console.error("Check household head error:", error.response?.data || error.message);
+            const errorData = error.response?.data || error.message;
+            console.error("Check household head error:", errorData);
+            console.error("Status:", error.response?.status);
+            console.error("Full error:", error);
             return { exists: false, error: true };
         }
     },
@@ -104,9 +107,10 @@ export const authService = {
             if (formData.idFront instanceof File) data.append("idFront", formData.idFront);
             if (formData.idBack  instanceof File) data.append("idBack",  formData.idBack);
 
-            const response = await api.post('/register', data, {
-                headers: { 'Content-Type': 'multipart/form-data' },
-            });
+            // IMPORTANT: Do NOT manually set Content-Type header. Axios automatically
+            // sets it to 'multipart/form-data; boundary=...' when FormData is passed.
+            // Setting it manually breaks the boundary and PHP won't parse $_POST.
+            const response = await api.post('/register', data);
 
             return response.data;
         } catch (error) {
@@ -125,9 +129,9 @@ export const authService = {
             if (formData.idFront instanceof File) data.append("idFront", formData.idFront);
             if (formData.idBack  instanceof File) data.append("idBack",  formData.idBack);
 
-            const response = await api.post('/staff/enroll', data, {
-                headers: { 'Content-Type': 'multipart/form-data' },
-            });
+            // IMPORTANT: Do NOT manually set Content-Type header. Axios automatically
+            // sets it to 'multipart/form-data; boundary=...' when FormData is passed.
+            const response = await api.post('/staff/enroll', data);
 
             return response.data;
         } catch (error) {

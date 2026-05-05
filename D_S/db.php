@@ -3,13 +3,18 @@ session_start(); // Make sure sessions are started
 
 header('Content-Type: application/json');
 
-// Include database connection
-$servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "bdg";
+// Use unified database configuration
+require_once __DIR__ . '/../api/config/database.php';
 
-$conn = new mysqli($servername, $username, $password, $dbname);
+$dbConfig = DatabaseConfig::getConfig();
+
+$conn = new mysqli(
+    $dbConfig['host'],
+    $dbConfig['user'],
+    $dbConfig['pass'],
+    $dbConfig['name'],
+    $dbConfig['port']
+);
 
 if ($conn->connect_error) {
     die(json_encode(["success" => false, "message" => "Connection failed: " . $conn->connect_error]));

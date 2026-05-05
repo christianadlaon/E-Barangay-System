@@ -16,8 +16,16 @@ import {
   setBarangayLogoDataUrl,
 } from "../utils/branding";
 
-const BrandingContext = createContext();
+const BrandingContext = createContext(null);
 const DEFAULT_FAVICON = "/gulodlogo-circle.png";
+
+// Default context value to prevent undefined errors
+const DEFAULT_BRANDING_VALUE = {
+  logoDataUrl: null,
+  updateLogo: async () => {},
+  resetLogo: async () => {},
+  hasCustomLogo: false,
+};
 
 const ensureLinkTag = (rel, type) => {
   if (typeof document === "undefined") return null;
@@ -107,4 +115,17 @@ export const BrandingProvider = ({ children }) => {
   );
 };
 
-export const useBranding = () => useContext(BrandingContext);
+export const useBranding = () => {
+  const context = useContext(BrandingContext);
+  
+  // If context is undefined, we're outside the provider
+  // Return default values and warn in development
+  if (context === undefined) {
+    if (process.env.NODE_ENV === 'development') {
+      console.warn('useBranding must be used within a BrandingProvider');
+    }
+    return DEFAULT_BRANDING_VALUE;
+  }
+  
+  return context || DEFAULT_BRANDING_VALUE;
+};
